@@ -8,54 +8,65 @@
 <link href="https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#fafafa; --ink:#18181b; --dim:#a1a1aa; --mark:#71717a;
-    --panel:#ffffffee; --accent:#3f3f46; --fs:44px;
+    --bg:#f7f5f0; --ink:#282621; --dim:#a49f94; --mark:#b77932;
+    --panel:#fffdf8ee; --accent:#69563e; --fs:44px;
     --text-font:'Merriweather',Georgia,serif; --ui-font:Inter,system-ui,sans-serif;
     --line-height:1.75; --content-width:1100px; --content-padding:60px;
-    --mark-height:.12em; --progress-color:#71717a;
+    --mark-height:.12em; --progress-color:#b77932;
+    color-scheme:light;
   }
   *{box-sizing:border-box}
-  html,body{margin:0;height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui-font)}
-  #stage{height:100vh;overflow:hidden;position:relative}
-  #text{max-width:var(--content-width);margin:0 auto;padding:45vh var(--content-padding);font-family:var(--text-font);font-size:var(--fs);line-height:var(--line-height);transition:transform .5s ease}
+  html,body{margin:0;min-height:100%;background:var(--bg);color:var(--ink);font-family:var(--ui-font)}
+  body{overflow:hidden}
+  #stage{height:100vh;height:100dvh;overflow:hidden;position:relative}
+  #text{max-width:var(--content-width);margin:0 auto;padding:43vh var(--content-padding) 48vh;font-family:var(--text-font);font-size:var(--fs);line-height:var(--line-height);transition:transform .38s cubic-bezier(.2,.75,.25,1);will-change:transform}
   #text p{margin:0 0 .9em}
-  #text p.titulo{font-weight:var(--title-weight);color:var(--accent)}
-  #placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:22px;text-align:center;padding:0 40px}
-  .w{position:relative;color:var(--ink);transition:color .25s}
+  #text p.titulo{font-weight:var(--title-weight);color:var(--accent);letter-spacing:-.025em}
+  #placeholder{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--dim);font-size:clamp(16px,2vw,21px);text-align:center;padding:24px}
+  #placeholder{isolation:isolate}
+  #placeholder::before{content:"";position:absolute;width:min(540px,calc(100% - 40px));height:180px;border:1px dashed color-mix(in srgb,var(--dim),transparent 45%);border-radius:24px;background:color-mix(in srgb,var(--panel),transparent 35%);z-index:-1}
+  .w{position:relative;color:var(--ink);transition:color .2s}
   .w.future{color:var(--dim)}
   /* sublinhado animado */
-  .w::after{content:"";position:absolute;left:-2px;right:-.3em;bottom:.08em;height:var(--mark-height);background:var(--mark);border-radius:2px;transform:scaleX(0);transform-origin:left;transition:transform .28s ease}
+  .w::after{content:"";position:absolute;left:-2px;right:-.3em;bottom:.08em;height:var(--mark-height);background:var(--mark);border-radius:3px;transform:scaleX(0);transform-origin:left;transition:transform .28s ease}
   .w.past::after,.w.cur::after{transform:scaleX(1)}
 
-  #panel{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);background:var(--panel);backdrop-filter:blur(6px);border:1px solid #0002;border-radius:14px;padding:12px 16px;display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;font-size:14px;max-width:calc(100% - 32px);box-shadow:0 6px 24px #0002;z-index:10}
+  #panel{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--panel);backdrop-filter:blur(18px) saturate(1.25);border:1px solid color-mix(in srgb,var(--ink),transparent 88%);border-radius:20px;padding:12px 14px;display:flex;flex-wrap:wrap;gap:9px;align-items:center;font-size:14px;max-width:calc(100% - 32px);box-shadow:0 16px 48px #24201824;z-index:10}
   #panel.hidden{display:none}
-  button{font:inherit;padding:8px 14px;border-radius:8px;border:1px solid #0003;background:var(--bg);color:var(--ink);cursor:pointer}
+  button{font:inherit;padding:9px 13px;border-radius:11px;border:1px solid color-mix(in srgb,var(--ink),transparent 84%);background:color-mix(in srgb,var(--bg),white 22%);color:var(--ink);cursor:pointer;transition:transform .15s ease,background .15s ease,border-color .15s ease}
+  button:hover:not(:disabled){transform:translateY(-1px);border-color:color-mix(in srgb,var(--accent),transparent 45%)}
   button.primary{background:var(--accent);color:#fff;border-color:transparent}
-  button:disabled{opacity:.6;cursor:default}
-  #help{opacity:.7;font-size:12px;width:100%}
-  #progress{position:fixed;top:0;left:0;height:4px;background:var(--progress-color);width:0;transition:width .3s;z-index:11}
-  #settingsOverlay{position:fixed;inset:0;z-index:20;background:#0008;display:flex;justify-content:flex-end}
+  button:disabled{opacity:.55;cursor:not-allowed}
+  #help{color:var(--ink);opacity:.68;font-size:11px;width:100%;text-align:center;padding:2px 4px 0}
+  #progress{position:fixed;top:0;left:0;height:4px;background:var(--progress-color);width:0;transition:width .2s ease;z-index:11;box-shadow:0 0 12px color-mix(in srgb,var(--progress-color),transparent 45%)}
+  #settingsOverlay{position:fixed;inset:0;z-index:20;background:#1715128c;backdrop-filter:blur(4px);display:flex;justify-content:flex-end}
   #settingsOverlay[hidden]{display:none}
-  #settings{width:min(460px,100%);height:100%;overflow:auto;background:var(--bg);color:var(--ink);padding:24px;box-shadow:-8px 0 32px #0003}
+  #settings{width:min(460px,100%);height:100%;overflow:auto;background:var(--bg);color:var(--ink);padding:24px max(24px,env(safe-area-inset-right)) 24px 24px;box-shadow:-8px 0 32px #0003;overscroll-behavior:contain}
   .settings-header{display:flex;align-items:flex-start;justify-content:space-between;gap:16px;margin-bottom:20px}
   .settings-header h2{font-size:22px;margin:0 0 6px}
   .settings-header p,.settings-note{font-size:13px;opacity:.72;margin:0}
-  .settings-section{border-top:1px solid #8884;padding:18px 0}
+  .settings-section{border-top:1px solid color-mix(in srgb,var(--ink),transparent 88%);padding:18px 0}
   .settings-section h3{font-size:15px;margin:0 0 12px}
   .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
   .setting{display:flex;flex-direction:column;gap:6px;font-size:13px}
   .setting.full{grid-column:1/-1}
-  .setting input[type="color"]{width:100%;height:38px;padding:3px;border:1px solid #8886;border-radius:7px;background:transparent;cursor:pointer}
+  .setting input[type="color"]{width:100%;height:38px;padding:3px;border:1px solid color-mix(in srgb,var(--ink),transparent 78%);border-radius:9px;background:transparent;cursor:pointer}
   .setting input[type="range"],.setting select{width:100%}
-  .setting select,.setting input[type="text"]{min-height:38px;padding:7px 9px;border-radius:7px;border:1px solid #8888;background:var(--bg);color:var(--ink);font:inherit}
+  .setting select,.setting input[type="text"]{min-height:38px;padding:7px 9px;border-radius:9px;border:1px solid color-mix(in srgb,var(--ink),transparent 78%);background:var(--bg);color:var(--ink);font:inherit}
   .setting output{font-size:12px;opacity:.72}
   .preset-list{display:flex;flex-wrap:wrap;gap:8px}
   .preset-list button{font-size:13px}
-  .preview-card{padding:14px;border:1px solid #8886;border-radius:10px;background:var(--bg);font-family:var(--text-font);font-size:18px;line-height:var(--line-height)}
+  .preview-card{padding:14px;border:1px solid color-mix(in srgb,var(--ink),transparent 84%);border-radius:14px;background:var(--bg);font-family:var(--text-font);font-size:18px;line-height:var(--line-height)}
   .preview-card strong{color:var(--accent)}
   .preview-current{display:inline-block;border-bottom:3px solid var(--mark)}
   #settingsActions{display:flex;gap:8px;justify-content:flex-end}
   button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--mark);outline-offset:2px}
+  @media(max-width:700px){
+    #text{padding-left:clamp(20px,7vw,var(--content-padding));padding-right:clamp(20px,7vw,var(--content-padding));font-size:min(var(--fs),8vw)}
+    #panel{bottom:max(10px,env(safe-area-inset-bottom));width:calc(100% - 20px);justify-content:center;border-radius:16px}
+    #panel button{padding:8px 10px;font-size:13px}
+    #help{line-height:1.5}
+  }
   @media(max-width:560px){
     #settings{padding:18px}
     #panel{gap:8px;padding:10px}
@@ -63,16 +74,20 @@
     .settings-grid{grid-template-columns:1fr}
     .setting.full{grid-column:auto}
   }
+  @media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important}
+    #text{will-change:auto}
+  }
 </style>
 </head>
 <body>
-<div id="progress"></div>
+<div id="progress" role="progressbar" aria-label="Progresso da leitura" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
 <div id="stage">
   <div id="text"></div>
-  <div id="placeholder">Importe um arquivo (.txt, .docx ou .pdf) pra começar</div>
+  <div id="placeholder">Importe um arquivo (.txt, .docx ou .pdf) para começar</div>
 </div>
 
-<div id="panel">
+<div id="panel" role="toolbar" aria-label="Controles de narração">
   <button class="primary" id="btnImport">📄 Importar arquivo</button>
   <button id="btnAutoSync">🤖 Sincronizar com IA</button>
   <button id="btnRecordVideo" disabled title="Sincronize o áudio antes de gravar">🎥 Gravar vídeo</button>
@@ -166,21 +181,21 @@
   </aside>
 </div>
 
-<input type="file" id="importFile" accept=".txt,.docx,.pdf,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" style="display:none">
-<input type="file" id="syncFile" accept="audio/*,video/*" style="display:none">
+<input type="file" id="importFile" accept=".txt,.docx,.pdf,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+<input type="file" id="syncFile" accept="audio/*,video/*" hidden>
 
 <script src="https://cdn.jsdelivr.net/npm/mammoth@1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/build/pdf.min.js"></script>
 
 <script>
-let words=[], idx=-1;
-let audio=null, marks=[];
+let words=[], idx=-1, textOffset=0;
+let audio=null, audioUrl=null, marks=[], playbackFrame=0;
 let videoRecorder=null, displayStream=null, recordingChunks=[], recordingAudio=null;
 const $=s=>document.querySelector(s);
 const $$=s=>document.querySelectorAll(s);
 const textEl=$('#text');
 const SETTINGS_KEY='narracao_settings_v1';
-const defaultSettings={bg:'#fafafa',ink:'#18181b',dim:'#a1a1aa',mark:'#71717a',accent:'#3f3f46',panel:'#ffffff',progress:'#71717a',font:"'Merriweather', Georgia, serif",fontSize:44,lineHeight:1.75,contentWidth:1100,padding:60,titleWeight:700,markHeight:.12};
+const defaultSettings={bg:'#f7f5f0',ink:'#282621',dim:'#a49f94',mark:'#b77932',accent:'#69563e',panel:'#fffdf8',progress:'#b77932',font:"'Merriweather', Georgia, serif",fontSize:44,lineHeight:1.75,contentWidth:1100,padding:60,titleWeight:700,markHeight:.12};
 const presets={
   claro:{...defaultSettings},
   escuro:{...defaultSettings,bg:'#18181b',ink:'#f4f4f5',dim:'#71717a',mark:'#facc15',accent:'#fafafa',panel:'#27272a',progress:'#facc15'},
@@ -192,7 +207,21 @@ if(window.pdfjsLib) pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdn.jsdelivr
 function readSettings(){
   try{
     const saved=JSON.parse(localStorage.getItem(SETTINGS_KEY)||'{}');
-    return {...defaultSettings,...saved};
+    if(!saved || typeof saved!=='object' || Array.isArray(saved)) return {...defaultSettings};
+    const settings={...defaultSettings};
+    const colors=['bg','ink','dim','mark','accent','panel','progress'];
+    colors.forEach(key=>{
+      if(typeof saved[key]==='string' && /^#[\da-f]{6}$/i.test(saved[key])) settings[key]=saved[key];
+    });
+    const fonts=["'Merriweather', Georgia, serif","Georgia, 'Times New Roman', serif","Arial, Helvetica, sans-serif","Inter, system-ui, sans-serif","'Courier New', monospace","Verdana, Geneva, sans-serif"];
+    if(fonts.includes(saved.font)) settings.font=saved.font;
+    const ranges={fontSize:[24,84],lineHeight:[1.2,2.4],contentWidth:[600,1400],padding:[16,120],markHeight:[.06,.24]};
+    Object.entries(ranges).forEach(([key,[min,max]])=>{
+      const value=saved[key];
+      if(typeof value==='number'&&Number.isFinite(value)) settings[key]=Math.min(max,Math.max(min,value));
+    });
+    if([600,700,800].includes(saved.titleWeight)) settings.titleWeight=saved.titleWeight;
+    return settings;
   }catch(err){
     console.error('Não foi possível carregar as configurações salvas.',err);
     return {...defaultSettings};
@@ -201,6 +230,7 @@ function readSettings(){
 let settings=readSettings();
 function applySettings(save=true){
   const root=document.documentElement;
+  root.style.colorScheme=settings.bg.toLowerCase()==='#000000'||settings.bg.toLowerCase()==='#18181b'?'dark':'light';
   const values={
     '--bg':settings.bg,'--ink':settings.ink,'--dim':settings.dim,'--mark':settings.mark,
     '--panel':settings.panel+'ee','--accent':settings.accent,'--fs':settings.fontSize+'px',
@@ -215,7 +245,7 @@ function applySettings(save=true){
     try{localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings));}
     catch(err){console.error('Não foi possível salvar as configurações.',err);}
   }
-  render();
+  updateTextPosition();
 }
 function updateSettingOutputs(){
   const labels={fontSize:value=>value+' px',lineHeight:value=>Number(value).toFixed(2),contentWidth:value=>value+' px',padding:value=>value+' px',markHeight:value=>Math.round(value*100)+'% da fonte'};
@@ -251,7 +281,15 @@ $$('[data-preset]').forEach(button=>{
 });
 $('#btnResetSettings').onclick=()=>{settings={...defaultSettings};applySettings();};
 document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'&&!$('#settingsOverlay').hidden){closeSettings();return;}
+  if($('#settingsOverlay').hidden) return;
+  if(e.key==='Escape'){closeSettings();return;}
+  if(e.key==='Tab'){
+    const focusable=[...$('#settings').querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled)')];
+    if(!focusable.length)return;
+    const first=focusable[0],last=focusable[focusable.length-1];
+    if(e.shiftKey&&document.activeElement===first){e.preventDefault();last.focus();}
+    else if(!e.shiftKey&&document.activeElement===last){e.preventDefault();first.focus();}
+  }
 });
 applySettings(false);
 
@@ -282,24 +320,34 @@ async function pdfToText(buf){
 async function extractText(file){
   const name=file.name.toLowerCase();
   if(name.endsWith('.docx')){
+    if(!window.mammoth) throw new Error('O leitor de arquivos DOCX não carregou. Verifique sua conexão e tente novamente.');
     const buf=await file.arrayBuffer();
     return (await mammoth.extractRawText({arrayBuffer:buf})).value;
   }
-  if(name.endsWith('.pdf')) return await pdfToText(await file.arrayBuffer());
-  return await file.text();
+  if(name.endsWith('.pdf')){
+    if(!window.pdfjsLib) throw new Error('O leitor de PDF não carregou. Verifique sua conexão e tente novamente.');
+    return await pdfToText(await file.arrayBuffer());
+  }
+  if(name.endsWith('.txt')) return await file.text();
+  throw new Error('Formato não suportado. Escolha um arquivo .txt, .docx ou .pdf.');
 }
 $('#btnImport').onclick=()=>$('#importFile').click();
 $('#importFile').onchange=async e=>{
   const f=e.target.files[0]; if(!f) return;
   const btn=$('#btnImport'); const old=btn.textContent;
   btn.textContent='⏳ Importando...'; btn.disabled=true;
-  try{ load(await extractText(f)); }
-  catch(err){ alert('Não foi possível importar o arquivo:\n'+err.message); }
+  try{
+    const raw=await extractText(f);
+    if(!raw.trim()) throw new Error('O arquivo não contém texto legível.');
+    load(raw);
+  }
+  catch(err){ alert('Não foi possível importar o arquivo:\n'+(err.message||String(err))); }
   btn.textContent=old; btn.disabled=false; e.target.value='';
 };
 
 function load(raw){
   resetSync();
+  textOffset=0;
   textEl.innerHTML=''; words=[];
   const paras=raw.replace(/\r/g,'').split(/\n\s*\n|\n(?=[IVXLC]+\s*[-–])/).map(s=>s.trim()).filter(Boolean);
   let phrase=0;
@@ -325,15 +373,36 @@ function render(){
     w.classList.toggle('cur', i===idx);
     w.classList.toggle('future', i>idx);
   });
-  $('#progress').style.width = words.length ? ((idx+1)/words.length*100)+'%' : 0;
-  // mantém a palavra atual centralizada
+  updateProgress();
+  updateTextPosition();
+}
+function updateProgress(){
+  const progress=words.length?((idx+1)/words.length*100):0;
+  $('#progress').style.width=progress+'%';
+  $('#progress').setAttribute('aria-valuenow',String(Math.round(progress)));
+}
+function updateTextPosition(){
   const ref = words[Math.max(idx,0)];
   if(ref){
-    const y = ref.offsetTop - window.innerHeight*0.42;
-    textEl.style.transform=`translateY(${-y}px)`;
-  }
+    const stageTop=$('#stage').getBoundingClientRect().top;
+    const naturalTop=ref.getBoundingClientRect().top-stageTop-textOffset;
+    textOffset=$('#stage').clientHeight*.42-naturalTop;
+    textEl.style.transform=`translateY(${textOffset}px)`;
+  }else{textOffset=0;textEl.style.transform='translateY(0px)';}
 }
-function go(n){ idx=Math.max(-1,Math.min(words.length-1,n)); render(); }
+function go(n){
+  const next=Math.max(-1,Math.min(words.length-1,n));
+  if(next===idx){updateProgress();updateTextPosition();return;}
+  const start=Math.min(idx,next),end=Math.max(idx,next);
+  for(let i=Math.max(0,start);i<=end;i++){
+    words[i].classList.toggle('past',i<next);
+    words[i].classList.toggle('cur',i===next);
+    words[i].classList.toggle('future',i>next);
+  }
+  idx=next;
+  updateProgress();
+  updateTextPosition();
+}
 
 /* ---- Sincronizar com IA: envia o áudio pra API da Groq (Whisper large-v3) com
    timestamp por palavra, e alinha o resultado com o nosso texto (tolerando pequenas
@@ -342,12 +411,18 @@ function normWord(w){
   return w.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z0-9]/g,'');
 }
 function getApiKey(){
-  let key=localStorage.getItem('groq_api_key');
+  let key='';
+  try{key=localStorage.getItem('groq_api_key')||'';}
+  catch(err){console.error('Não foi possível acessar a chave salva da API.',err);}
   if(!key){
     key=prompt('Cole sua chave da API da Groq (console.groq.com/keys).\nEla fica salva só no seu navegador, nunca é enviada a mais ninguém além da Groq.');
-    if(key) localStorage.setItem('groq_api_key', key.trim());
+    if(key){
+      key=key.trim();
+      try{localStorage.setItem('groq_api_key',key);}
+      catch(err){console.error('Não foi possível salvar a chave da API neste navegador.',err);}
+    }
   }
-  return key;
+  return key?.trim()||'';
 }
 async function transcribeWithTimestamps(file, apiKey){
   const form=new FormData();
@@ -405,8 +480,15 @@ function fillGaps(){
   }
 }
 function resetSync(){
+  cancelAnimationFrame(playbackFrame);
   if(videoRecorder && videoRecorder.state!=='inactive') stopVideoRecording();
-  if(audio) audio.pause();
+  if(audio){
+    audio.pause();
+    audio.removeAttribute('src');
+    audio.load();
+  }
+  if(audioUrl) URL.revokeObjectURL(audioUrl);
+  audioUrl=null;playbackFrame=0;
   audio=null; marks=[];
   setSyncButton('idle');
 }
@@ -433,6 +515,10 @@ async function startVideoRecording(){
   let stream, recorder;
   try{
     stream=await navigator.mediaDevices.getDisplayMedia({video:{frameRate:30},audio:true});
+    if(!stream.getVideoTracks().length){
+      stream.getTracks().forEach(track=>track.stop());
+      throw new Error('A captura não incluiu vídeo. Selecione uma tela ou janela para compartilhar.');
+    }
     if(!stream.getAudioTracks().length){
       stream.getTracks().forEach(track=>track.stop());
       throw new Error('A captura veio sem áudio. Compartilhe esta aba e marque a opção para compartilhar o áudio.');
@@ -496,22 +582,29 @@ function stopVideoRecording(){
 }
 // pausa sem perder a sincronização já feita: "Iniciar" depois reproduz de novo sem chamar a IA outra vez
 function stopPlayback(){
+  cancelAnimationFrame(playbackFrame);
   if(audio) audio.pause();
   setSyncButton(marks.length ? 'paused' : 'idle');
 }
 function playSynced(){
   if(!audio) return;
-  go(-1); audio.currentTime=0;
-  audio.play().then(()=>{
+  cancelAnimationFrame(playbackFrame);
+  const playbackAudio=audio;
+  let playbackIndex=-1;
+  go(-1); playbackAudio.currentTime=0;
+  playbackAudio.play().then(()=>{
+    if(audio!==playbackAudio) return;
     setSyncButton('playing');
     const loop=()=>{
-      const t=audio.currentTime; let k=-1;
-      for(let i=0;i<marks.length;i++){ if(marks[i]!==null && marks[i]<=t) k=i; }
-      if(k!==idx) go(k);
-      if(!audio.paused) requestAnimationFrame(loop); else setSyncButton(marks.length?'paused':'idle');
+      if(audio!==playbackAudio) return;
+      const t=playbackAudio.currentTime;
+      while(playbackIndex+1<marks.length && marks[playbackIndex+1]!==null && marks[playbackIndex+1]<=t) playbackIndex++;
+      if(playbackIndex!==idx) go(playbackIndex);
+      if(!playbackAudio.paused) playbackFrame=requestAnimationFrame(loop); else setSyncButton(marks.length?'paused':'idle');
     };
     loop();
   }).catch(err=>{
+    if(audio!==playbackAudio) return;
     console.error('Não foi possível reproduzir o áudio sincronizado.',err);
     stopVideoRecording();
     setSyncButton(marks.length?'paused':'idle');
@@ -531,29 +624,45 @@ function startSync(){
 $('#syncFile').onchange=async e=>{
   const f=e.target.files[0]; if(!f) return;
   const btn=$('#btnAutoSync');
-  const apiKey=getApiKey();
-  if(!apiKey){ e.target.value=''; return; }
-  if(f.size>25*1024*1024){ alert('Esse áudio passa de 25MB (limite da API). Comprima ou corte o arquivo e tente de novo.'); e.target.value=''; return; }
-  btn.disabled=true; btn.textContent='⏳ Enviando áudio pra IA...';
+  btn.disabled=true; btn.textContent='⏳ Preparando sincronização...';
   try{
+    const apiKey=getApiKey();
+    if(!apiKey) return;
+    if(f.size>25*1024*1024) throw new Error('Esse áudio passa de 25MB (limite da API). Comprima ou corte o arquivo e tente de novo.');
+    resetSync();
+    btn.disabled=true;
+    btn.textContent='⏳ Enviando áudio pra IA...';
     const result=await transcribeWithTimestamps(f, apiKey);
-    const apiWords=result.words||[];
+    const apiWords=Array.isArray(result.words)?result.words.filter(w=>w&&typeof w.word==='string'&&Number.isFinite(w.start)&&w.start>=0):[];
     if(!apiWords.length) throw new Error('A API não retornou marcação por palavra.');
     marks=alignMarks(apiWords);
-    audio=new Audio(URL.createObjectURL(f));
-    if(isNaN(audio.duration)) await new Promise(res=>audio.addEventListener('loadedmetadata',res,{once:true}));
+    audioUrl=URL.createObjectURL(f);
+    audio=new Audio(audioUrl);
+    if(audio.readyState<1) await new Promise((resolve,reject)=>{
+      audio.addEventListener('loadedmetadata',resolve,{once:true});
+      audio.addEventListener('error',()=>reject(new Error('O navegador não conseguiu abrir o áudio selecionado.')),{once:true});
+    });
+    if(!Number.isFinite(audio.duration)||audio.duration<=0) throw new Error('O áudio não possui uma duração válida.');
     fillGaps();
+    setSyncButton('paused');
     playSynced();
   }catch(err){
-    alert('Falha na sincronização:\n'+err.message);
+    alert('Falha na sincronização:\n'+(err.message||String(err)));
+    if(audio){audio.pause();audio=null;}
+    if(audioUrl) URL.revokeObjectURL(audioUrl);
+    audioUrl=null;marks=[];
     setSyncButton('idle');
+  }finally{
+    btn.disabled=false;
+    e.target.value='';
+    if(!audio)setSyncButton('idle');
   }
-  e.target.value='';
 };
 setSyncButton('idle');
 
 document.addEventListener('keydown',e=>{
   if(e.target.matches('input,select,textarea,[contenteditable="true"]')) return;
+  if(!$('#settingsOverlay').hidden) return;
   const k=e.key.toLowerCase();
   if(k==='arrowright'){ e.preventDefault(); go(idx+1); }
   else if(k==='arrowleft'){ e.preventDefault(); go(idx-1); }
@@ -564,7 +673,7 @@ document.addEventListener('keydown',e=>{
   else if(k==='+'||k==='='){ changeFontSize(4); }
   else if(k==='-'){ changeFontSize(-4); }
 });
-window.addEventListener('resize',render);
+window.addEventListener('resize',updateTextPosition);
 </script>
 </body>
 </html>
